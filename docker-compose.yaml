@@ -1,0 +1,9 @@
+services:
+  database:
+    image: 'mysql:latest'
+    env_file: .env
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=WTF
+    ports:
+      - 3306:3306
