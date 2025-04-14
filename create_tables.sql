@@ -10,13 +10,13 @@ CREATE TABLE city(
     id int NOT NULL AUTO_INCREMENT,
     name VARCHAR(200) NOT NULL,
     latitude DECIMAL(9,6) NOT NULL,
-    longtitude DECIMAL(9,6) NOT NULL,
+    longitude DECIMAL(9,6) NOT NULL,
     country_id INT NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (country_id) REFERENCES country(id)
 );
 
-CREATE TABLE mesurement(
+CREATE TABLE measurement(
     id int NOT NULL AUTO_INCREMENT,
     datetime DATETIME NOT NULL,
     temperature DECIMAL(7,2) NOT NULL,
@@ -30,4 +30,4 @@ CREATE TABLE mesurement(
     city_id INT NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (city_id) REFERENCES city(id)
-)
+);
