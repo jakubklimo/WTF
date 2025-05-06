@@ -1,46 +1,55 @@
 package org.jakubklimo.wtf.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.jakubklimo.wtf.dtos.CountryDto;
 import org.jakubklimo.wtf.models.Country;
 import org.jakubklimo.wtf.services.CountryService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/country")
+@RequestMapping("api/countries")
 @RequiredArgsConstructor
 public class CountryController {
     private final CountryService countryService;
 
-    @GetMapping("/all")
-    public List<Country> getAllCountries(){
-        return countryService.getAllCountries();
+    @GetMapping
+    public ResponseEntity<List<Country>> getAllCountries(){
+        return ResponseEntity.ok(countryService.getAllCountries());
     }
 
     @GetMapping("/{id}")
-    public Country getCountryById(@PathVariable Long id){
-        return countryService.getCountryById(id);
+    public ResponseEntity<Country> getCountryById(@PathVariable Long id){
+        Country country =  countryService.getCountryById(id);
+        return ResponseEntity.ok(country);
     }
 
-    @GetMapping("/name/{name}")
-    public Country getCountryByName(@PathVariable String name){
-        return countryService.getCountryByName(name);
+    @GetMapping("/name")
+    public ResponseEntity<Country> getCountryByName(@RequestParam String name){
+        Country country =  countryService.getCountryByName(name);
+        return ResponseEntity.ok(country);
     }
 
     @PostMapping
-    public Country createCountry(@RequestBody CountryDto country){
-        return countryService.createCountry(country);
+    public ResponseEntity<Country> createCountry(@Valid @RequestBody CountryDto country){
+        Country countryCreated = countryService.createCountry(country);
+        URI location = URI.create(String.format("/api/countries/%s", countryCreated.getId()));
+        return ResponseEntity.created(location).body(countryCreated);
     }
 
     @PutMapping("/{id}")
-    public Country updateCountry(@PathVariable Long id, @RequestBody CountryDto country){
-        return countryService.updateCountry(id, country);
+    public ResponseEntity<Country> updateCountry(@PathVariable Long id, @Valid @RequestBody CountryDto country){
+        Country countryUpdated = countryService.updateCountry(id, country);
+        return ResponseEntity.ok(countryUpdated);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteCountry(@PathVariable Long id){
+    public ResponseEntity<Void> deleteCountry(@PathVariable Long id){
         countryService.deleteCountry(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -1,46 +1,55 @@
 package org.jakubklimo.wtf.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.jakubklimo.wtf.dtos.CityDto;
 import org.jakubklimo.wtf.models.City;
 import org.jakubklimo.wtf.services.CityService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/city")
+@RequestMapping("api/cities")
 @RequiredArgsConstructor
 public class CityController {
     private final CityService cityService;
 
-    @GetMapping("/all")
-    public List<City> getAll(){
-        return cityService.findAll();
+    @GetMapping
+    public ResponseEntity<List<City>> getAll(){
+        return ResponseEntity.ok(cityService.findAll());
     }
 
     @GetMapping("/{id}")
-    public City getById(@PathVariable Long id){
-        return cityService.getCityById(id);
+    public ResponseEntity<City> getById(@PathVariable Long id){
+        City city = cityService.getCityById(id);
+        return ResponseEntity.ok(city);
     }
 
-    @GetMapping("/name/{name}")
-    public City getByName(@PathVariable String name){
-        return cityService.getCityByName(name);
+    @GetMapping("/name")
+    public ResponseEntity<City> getByName(@RequestParam String name){
+        City city = cityService.getCityByName(name);
+        return ResponseEntity.ok(city);
     }
 
     @PostMapping
-    public City createCity(@RequestBody CityDto city){
-        return cityService.createCity(city);
+    public ResponseEntity<City> createCity(@Valid @RequestBody CityDto city){
+        City cityCreated = cityService.createCity(city);
+        URI location = URI.create(String.format("/api/cities/%s", cityCreated.getId()));
+        return ResponseEntity.created(location).body(cityCreated);
     }
 
     @PutMapping("/{id}")
-    public City updateCity(@PathVariable Long id, @RequestBody CityDto city){
-        return cityService.updateCity(id, city);
+    public ResponseEntity<City> updateCity(@PathVariable Long id, @Valid @RequestBody CityDto city){
+        City cityUpdated = cityService.updateCity(id, city);
+        return ResponseEntity.ok(cityUpdated);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteCity(@PathVariable Long id){
+    public ResponseEntity<Void> deleteCity(@PathVariable Long id){
         cityService.deleteCity(id);
+        return ResponseEntity.noContent().build();
     }
 }
