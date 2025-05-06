@@ -11,10 +11,11 @@ import org.jakubklimo.wtf.services.WeatherService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/measurement")
+@RequestMapping("api/measurements")
 @RequiredArgsConstructor
 public class MeasurementController {
     private final MeasurementService measurementService;
@@ -41,6 +42,13 @@ public class MeasurementController {
     public ResponseEntity<MeasurementStatsDto> getAverageStatsByCity(@RequestParam String cityName, @RequestParam Integer days){
         MeasurementStatsDto stats = measurementService.getAverageStats(cityName, days);
         return ResponseEntity.ok(stats);
+    }
+
+    @PostMapping
+    public ResponseEntity<Measurement> createMeasurement(@Valid @RequestBody MeasurementDto dto) {
+        Measurement created = measurementService.createMeasurement(dto);
+        URI location = URI.create(String.format("/api/measurements/%d", created.getId()));
+        return ResponseEntity.created(location).body(created);
     }
 
     @PutMapping("/{id}")

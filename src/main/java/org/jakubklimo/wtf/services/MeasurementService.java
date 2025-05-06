@@ -48,6 +48,23 @@ public class MeasurementService {
         );
     }
 
+    public Measurement createMeasurement(MeasurementDto measurement) {
+        Measurement newMeasurement = new Measurement();
+        City city = cityRepository.findById(measurement.city_id())
+                .orElseThrow(() -> new EntityNotFoundException("City", measurement.city_id().toString()));
+        newMeasurement.setCity(city);
+        newMeasurement.setTemperature(measurement.temperature());
+        newMeasurement.setPressure(measurement.pressure());
+        newMeasurement.setHumidity(measurement.humidity());
+        newMeasurement.setDatetime(measurement.datetime());
+        newMeasurement.setTemperatureMin(measurement.temperatureMin());
+        newMeasurement.setTemperatureMax(measurement.temperatureMax());
+        newMeasurement.setWeatherMain(measurement.weatherMain());
+        newMeasurement.setWeatherDesc(measurement.weatherDesc());
+        newMeasurement.setWindSpeed(measurement.windSpeed());
+        return measurementRepository.save(newMeasurement);
+    }
+
     public Measurement updateMeasurement(Long id, MeasurementDto measurement) {
         Measurement measurementToUpdate = measurementRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Measurement", id.toString()));
