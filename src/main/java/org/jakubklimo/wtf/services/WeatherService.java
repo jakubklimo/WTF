@@ -18,12 +18,17 @@ import org.slf4j.Logger;
 import java.time.LocalDateTime;
 
 @Service
-@RequiredArgsConstructor
 public class WeatherService {
     private static final Logger logger = LoggerFactory.getLogger(WeatherService.class);
     private final CityRepository cityRepository;
     private final MeasurementRepository measurementRepository;
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
+
+    public WeatherService(CityRepository cityRepository, MeasurementRepository measurementRepository, RestTemplate restTemplate) {
+        this.cityRepository = cityRepository;
+        this.measurementRepository = measurementRepository;
+        this.restTemplate = restTemplate;
+    }
 
     @Value("${weather.api.key}")
     private String apiKey;

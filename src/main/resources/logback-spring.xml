@@ -1,4 +1,8 @@
 <configuration>
+    <logger name="javax.management.remote.rmi" level="WARN" />
+    <logger name="sun.rmi.transport.tcp" level="WARN" />
+    <logger name="sun.rmi.loader" level="WARN" />
+
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
